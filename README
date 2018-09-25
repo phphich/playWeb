@@ -2,3 +2,10 @@ This is your new Play application
 =====================================
 
 This file will be packaged with your application, when using `play dist`.
+<hr>
+        <a href="/showProfile" class="list-group-item list-group-item-success">Show profile</a>
+        <a href="/book_form" class="list-group-item list-group-item-success">Book form dynamic</a>
+        <a href="/book_form_helper" class="list-group-item list-group-item-success">Book form helper</a>
+        <a href="/book_form_helper_list" class="list-group-item list-group-item-success">Book form helper and List</a>
+
+    <hr>

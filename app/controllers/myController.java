@@ -10,7 +10,6 @@ import models.Person;
 import models.Products;
 import play.mvc.Controller;
 import play.mvc.Result;
-
 import views.html.*;
 
 import java.io.File;
@@ -137,10 +136,38 @@ public class myController extends Controller{
         return Application.main(comics_form_helper_list.render(comicsForm));
     }
 
-    public static Result comics_post_helper_list(){
+     public static Result comics_post_helper_list(){
         Form<Comics> myForm = comicsForm.bindFromRequest();
         Http.MultipartFormData body = request().body().asMultipartFormData();
-        Http.MultipartFormData.FilePart picture = body.getFile("picture");
+        Http.MultipartFormData.FilePart uploadFilePart = body.getFile("picture");
+
+        String fileName, contentType;
+        if(myForm.hasErrors()){
+            flash("errMsg", "ท่านป้อนข้อมูลไม่ถูกต้อง/ไม่สมบูรณ์");
+            return Application.main(comics_form_helper_list.render(myForm));
+        }
+        else {
+            if (uploadFilePart != null) {
+                contentType = uploadFilePart.getContentType();
+                File file = uploadFilePart.getFile();
+                fileName = uploadFilePart.getFilename();
+                if (!contentType.startsWith("image")) {
+                    flash("errContentType", "ท่านเลือกประเภทไฟล์ที่ไม่ใช่รูปภาพ");
+                    return Application.main(comics_form_helper_list.render(myForm));
+                }
+                comics = myForm.get();
+                fileName = comics.getId()  + fileName.substring(fileName.lastIndexOf("."));
+                file.renameTo( new File(comPicPath, fileName));
+                comics.setPicture(fileName);
+                comicsList.add(comics);
+                return Application.main(comics_show_helper_list.render(comicsList));
+            }else{
+                flash("errMsg", "ท่านเลือกรูปภาพไม่ถูกต้อง");
+                return Application.main(comics_form_helper_list.render(myForm));
+            }
+        }
+/*
+        //Http.MultipartFormData.FilePart picture = body.getFile("picture");
         String fileName, contentType;
         if(myForm.hasErrors()){
             flash("errMsg", "ท่านป้อนข้อมูลไม่ถูกต้อง/ไม่สมบูรณ์");
@@ -162,7 +189,7 @@ public class myController extends Controller{
                 comicsList.add(comics);
             }
             return Application.main(comics_show_helper_list.render(comicsList));
-        }
+        } */
     }
 
     public static Result showComicsList() {
