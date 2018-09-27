@@ -5,6 +5,7 @@ package models;
  */
 public class Movie {
     private String id;
-    private String title, manActor, womanActor;
+    private String title, manActor, womanActor, director;
+    private String company;
 
 }
